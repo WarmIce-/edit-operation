@@ -20,8 +20,6 @@ public class ContactServiceImpl extends JdbcTemplate implements ContactService {
      String sql="SELECT * FROM Contact";
        List<Contact>ContactList= getJdbcTemplate().query(sql,new ContactRowMapper());
         return ContactList;
-
-
     }
 @Override
     public void insertorUpdate(Contact contact) {
@@ -45,19 +43,23 @@ public class ContactServiceImpl extends JdbcTemplate implements ContactService {
         getJdbcTemplate().update(sql, args);
     }
     }
-@Override
+
+
+    @Override
     public Contact getById(int contactId)
     {
-        Object[]args={contactId};
+        Object[] args = {contactId};
         String sql = "select * from Contact where id=?";
         Contact contact=getJdbcTemplate().queryForObject(sql,new ContactRowMapper(),args);
         return contact;
     }
-@Override
-    public void delete(int contactId) {
-        Object[]args={contactId};
-        String sql="delete from contact where id=?";
-        getJdbcTemplate().update(sql,args);
+
+
+    @Override
+    public boolean delete(int contactId) {
+        Object[] args = {contactId};
+        String sql = "delete from Contact where id=?";
+        return getJdbcTemplate().update(sql, args) > 0;
 
     }
 }

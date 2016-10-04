@@ -13,13 +13,13 @@
     <h4>${msg}</h4>
         </div>
     <style>
-        .navbar
-        { background-color: darkgoldenrod;
+        .navbar {
+            background-color: blueviolet;
 
         }
         .content
         {
-            background-color: antiquewhite;
+            background-color: transparent;
         }
         </style>
 
@@ -54,21 +54,42 @@
     <tbody>
     <c:forEach items="${List}" varStatus="i" var="contact" >
         <tr class="tr1">
-            <td style="width: 200px;text-align: center">${i.index+1}</td>
+            <td style="width: 200px;text-align: center">${contact.id}</td>
             <td style="width: 200px;text-align: center">${contact.name}</td>
             <td style="width: 200px;text-align: center">${contact.email}</td>
             <td style="width: 200px;text-align: center">${contact.telephone}</td>
             <td style="width: 200px;text-align: center">${contact.address}</td>
             <td>
-                <button class="btn btn-default" onclick="editButtonPressed(this)">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                    Edit
-                </button>
-                |
-                <button class="btn btn-danger"><span
-                        class="glyphicon glyphicon-remove-sign"></span>
-                    Delete
-                </button>
+
+                <form id="editContact" class="form-horizontal" action="${pageContext.request.contextPath}/editContact/"
+                      method="get">
+
+                        <%--
+                        when <input>, <textarea>, and <select> elements [ these are also called form elements]
+                        are defined inside <form> tag , then
+                        attribute -> 'name' is define inside those elements  which carries a value set to it and that value gets sent to
+                        the controller when submit button is pressed.
+
+
+                        EX: in our case , <input> element which is of type hidden has an attribut called "name" denoted by
+                         label 'rowId', i.e  <input type='hidden'  name='rowId'>.
+                         This rowId is catched from inside /editContract/ controller. Easy right???  :D
+                        --%>
+
+                        <%-- define hidden field having attribute "name" --%>
+                    <input type="hidden" name="rowId" id="fetchRowId">
+                    <button type="button" class="btn btn-default" onclick="editButtonPressed(this)">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        Edit
+                    </button>
+                    |
+                    <button type="button" class="btn btn-danger" onclick="deleteButtonPressed(this)"><span
+                            class="glyphicon glyphicon-remove-sign"></span>
+                        Delete
+                    </button>
+
+                </form>
+
 
             </td>
         </tr>
@@ -82,35 +103,37 @@
 
     function editButtonPressed(thisObj) {
 
-        /*
-         *  NOTICE!!: RABIN ,learn how to use jquery now, but
-         *  before you dive deep into jquery, learn how to use debugger first.
-         *  if you don't know how to use debugger, see some tutorials, i would recommend seeing video tutorials,
-         *  without debugger, learning jquery is a nightmare,
-         *
-         *
-         *  after that , learn how to use "inspect element" feature of browser properly,
-         *  learn to see network calls,console,html elements etc inside inspect.
-         *
-         *  when you start feeling comfortable with inspect-element, you are one step closer to "becoming developer"
-         *
-         *
+        /* fetch the ID of table row using jquery when edit button is pressed.
+         *  If you find below jquery code hard to understand, you need to learn how to use debugger while
+         *  writing jquery code.
          * */
+        var rowID = $(thisObj).closest("tr").find("td:nth-child(1)").text();
 
+
+        /* we have defined a hidden field inside <form> tag above, remember??
+         * we are setting the value of rowID to that hidden field which we have calculated in above step using jquery
+         * */
+        $("#fetchRowId").val(rowID);
+
+        /*jquery code to trigger form submit operation.
+         * when a form is submitted, it binds the value of rowId to <input> element.
+         * and it looks like: <input type="hidden" name="rowId" id="fetchRowId"  value="3"> // eg: 3= rowID
+         *
+         * when a controller is hit, we can retrieve the value of rowId passed from jsp using ( @RequestParam annotation )
+         * */
+        $("#editContact").submit();
+
+    }
+
+
+    function deleteButtonPressed(thisObj) {
 
         var rowID = $(thisObj).closest("tr").find("td:nth-child(1)").text();
-        var controllerURL = "/editContact/";
-        var method = "GET";
-        triggerAjax(rowID, controllerURL, method);
+        $("#fetchRowId").val(rowID);
+        $("#editContact").attr('action', '${pageContext.request.contextPath}/deleteContact/').submit()
     }
 
-    function triggerAjax(rowId, controllerURL, method) {
-        $.ajax({
-            url: controllerURL + rowId,
-            type: method
-        });
 
-    }
 </script>
 </body>
 

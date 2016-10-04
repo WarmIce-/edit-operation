@@ -6,9 +6,14 @@ import com.springapp.mvc.Models.Contact;
 import java.util.List;
 
 public interface ContactService {
+
+    /*in interface , all the methods and fields are public by default!!*/
     List<Contact> list();
-    public void insertorUpdate(Contact contact);
-    public Contact getById(int contactId);
-    public void delete(int contactId);
+
+    void insertorUpdate(Contact contact);
+
+    Contact getById(int contactId);
+
+    boolean delete(int contactId);
 
 }
